@@ -1,0 +1,58 @@
+﻿<div class="full">
+  
+    <div class="main">
+
+        <div class="top">
+            <div class="upload-row">
+
+                    <input class="form-control" type="file" 
+                    (change)="onChange($event)">
+                    <button (click)="onUpload()" class="btn btn-secondary">Upload</button>
+    
+              <div style="display: flex;">
+                  <div class="container" *ngIf="loading">
+                      <h3>Loading ...</h3>
+                  </div>
+              </div>
+
+            </div>
+    
+            <div class="search">
+              <input class="search-field" type="search" placeholder="Buscador" [(ngModel)] = "searchTerm" (ngModelChange) = "search()">
+            </div>
+        </div>
+
+        <div class="docCardMain">
+            <div class="docCard" *ngFor="let doc of docs">
+                <div class="docCardHeader">
+                    <h6>{{ doc.originalName }}</h6>
+                </div>
+                <div class="docIcon">
+                    <div *ngIf="isImage(doc.mimeType); else notShow">
+                        <img 
+                        src="http://localhost:4600/uploads/{{doc.filePath}}-thumbnail"
+                        alt="{{ doc.originalName }}" 
+                        class="img-responsive" 
+                        style="max-height: 100px;"/>
+                    </div>
+                    
+                    <ng-template #notShow>
+                        <img 
+                        src="http://localhost:4600/uploads/docimage.png"
+                        alt="{{ doc.originalName }}" 
+                        class="img-responsive" 
+                        style="max-height: 100px;"/>
+                    </ng-template>
+                    <div>
+                        {{ doc.uploadedDate }}
+                    </div>
+                    <div>
+                        <a href="http://localhost:4600/uploads/{{doc.filePath}}" class="text-info">Download</a><br>
+                        <a (click)="remove(doc.filePath)" class="text-danger" style="cursor: pointer;">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+  </div>  

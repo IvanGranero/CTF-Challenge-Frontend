@@ -1,0 +1,133 @@
+/* You can add global styles to this file, and also import other style files */
+
+h2{  
+    text-align: center;  
+    color: rgb(66, 137, 219);
+    padding: 20px;  
+} 
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.login{  
+    width: 382px;  
+    overflow: hidden;  
+    margin: auto;  
+    margin: 20 0 0 450px;  
+    padding: 80px;  
+    background: rgb(66, 137, 219);
+    border-radius: 15px ;  
+      
+}
+
+.full {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.top {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-content: center;
+    background-color: rgb(66, 137, 219);
+    height: 10%;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(226, 229, 231);
+    height: 90%;
+}
+
+.upload-row {
+    display: flex;
+    flex-flow: row;
+    width: 30%;
+}
+
+.search {
+    display: flex;
+ 
+}
+
+.search-field {
+    display: flex;
+    width: 100%;
+    height: 20px;
+    background-image: url("./assets/images/icono_buscar.svg");
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 95%;
+    background-color: rgb(192, 190, 190);
+    border-radius: 20px;
+    border: 1px solid grey;
+    padding: 5px;
+    padding-left: 16px;
+    color: black;
+    font-weight: bold;
+}
+
+.search-icon {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+}
+
+.popup {
+    background-color: rgb(249, 252, 255);
+    position:absolute;
+    top: 150px;
+    justify-content: center;
+}
+
+.docCardMain {
+    display: flex;
+    flex-flow: row nowrap;
+    height: 90%;
+    background-color: rgb(249, 252, 255);
+    border-radius: 0px 0px 10px 10px;
+    color: black;
+    font-size: small;
+}
+
+.docCard {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    height: 200px;
+    width: 270px;
+    margin: 10px;
+    box-shadow: 3px 3px 3px #ccc;
+    border-radius: 10px;
+}
+
+.docCardHeader {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-content: center;
+    object-fit: contain;
+    height: 30%;
+    width: 100%;
+    background-color: rgb(66, 137, 219);
+    border-radius: 10px 10px 0px 0px;
+    color: white;
+    font-size: small;
+}
+
+.docIcon {
+    display: flex;
+    flex-flow: row nowrap;    
+    justify-content: center;
+    height: 50%;
+    width: 100%;
+    border-radius: 5px;
+    padding: 0.3em;
+    margin: 8px;
+}
