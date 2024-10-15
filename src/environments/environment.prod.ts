@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://commusense.com/api'
+  apiUrl: 'https://etasboschdefcon.online/api'
 };

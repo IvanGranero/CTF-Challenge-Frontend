@@ -5,4 +5,5 @@
     userCategory: string;
     password: string;
     sessionToken: string;
+    sshkey: string;
 }

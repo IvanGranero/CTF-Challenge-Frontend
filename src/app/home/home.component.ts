@@ -1,88 +1,76 @@
 ﻿import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { User, Doc } from '@app/_models';
-import { UserService, AuthenticationService } from '@app/_services';
+import { User } from '@app/_models';
+import { UserService, AlertService, AuthenticationService } from '@app/_services';
 
 @Component({ templateUrl: 'home.component.html' })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnDestroy, OnInit {
     currentUser: User;
     currentUserSubscription: Subscription;
-    docs: Doc[] = [];
-    alldocs: Doc[] = [];
-    searchTerm: string = "";
     loading: boolean = false;
-    file: File = null;    
+    homeForm: FormGroup;
+    submitted: boolean = false;
+    returnUrl: string;  
+    sshkey: string;
+    html1 = '<h1>Capture The Firmware</h1>';
+    html2 = 'Challenge Description:<br>Your goal is to capture the flag inside the memory of an emulated ECU.<br>The memory region starts at 0x1000 and the flag format is FLAG{example_of_flag}';
+    html3 = 'Challenge setup:<br>Submit your public ssh key and access the challenge as canopener@159.203.130.92<br>can-utils and caringcaribou (cc.py) are already installed, canbus is over vcan0.';
+    //html4 = 'Hint:<br>https://ioactive.com/adventures-in-automotive-networks-and-control-units/';
+    html5 = 'Rules of engagement:<br>You are only allowed to write and read out of the VCAN0 bus<br>do not change anything else<br>files and directories within the server are out of the scope of this challenge.';
 
     constructor(
+        private formBuilder: FormBuilder,  
+        private route: ActivatedRoute,              
         private authenticationService: AuthenticationService,
-        private userService: UserService
+        private userService: UserService,
+        private alertService: AlertService
     ) {
-        this.currentUserSubscription = this.authenticationService.currentUser.subscribe(user => {
-            this.currentUser = user;
-        });
+        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
 
-    ngOnInit() {
-        this.loadAllDocs();
-    }
+    ngOnInit() {     
+        this.sshkey = this.currentUser.sshkey           
+        this.homeForm = this.formBuilder.group({
+            sshkey: ['', Validators.required]
+        });
+        
+    }    
 
     ngOnDestroy() {
         // unsubscribe to ensure no memory leaks
         this.currentUserSubscription.unsubscribe();
     }
 
-    remove(filePath: string) {
-        this.userService.delete(filePath).pipe(first()).subscribe(docs => {
-            this.alldocs = this.alldocs.filter((c: any) => c.filePath !== filePath);
-            this.docs = this.docs.filter((c: any) => c.filePath !== filePath);
-        });
-    }
+    // convenience getter for easy access to form fields
+    get f() { return this.homeForm.controls; }    
 
-    download(filePath: string) {
-        this.userService.download(filePath).pipe(first()).subscribe(() => {
-        });
-    }
+    // OnClick of button Submit key
+    onSubmit() {
 
-    private loadAllDocs() {
-        this.userService.getAll().pipe(first()).subscribe(docs => {
-            this.alldocs = docs;
-            this.assignCopy();
-        });
-    }
+        this.submitted = true;
 
-    assignCopy() {
-        this.docs = Object.assign([], this.alldocs);
-      }
+        // stop here if form is invalid
+        if (this.homeForm.invalid) {
+            return;
+        }
 
-    onChange(event) {
-        this.file = event.target.files[0];
-    }
-  
-    // OnClick of button Upload
-    onUpload() {
-        this.loading = !this.loading;
-        this.userService.upload(this.file).subscribe(
-            (event: any) => {
-                if (typeof (event) === 'object') {
-                    this.loading = false; 
-                }
+        this.loading = true;
+        this.userService.submitkey(this.homeForm.value).subscribe(
+            data => {            
+                this.currentUser.sshkey = this.f.sshkey.value;
+                localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+                this.alertService.success('SSH key has been updated', true);                
                 location.reload();
+            },
+            error => {
+                this.alertService.error(error);
+                this.loading = false;
             }
         );
-    }
-
-    isImage(mimeType: string) : boolean {
-        return mimeType.split("/")[0] === "image";
-    }
-
-    search(): void {
-        this.docs = this.alldocs.filter(
-          (el) => 
-          el.originalName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          el.mimeType.toLowerCase().includes(this.searchTerm.toLowerCase()) 
-        );
-      }
+    }  
 
 }
